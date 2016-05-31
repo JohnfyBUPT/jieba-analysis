@@ -105,7 +105,7 @@ public class WordDictionary {
                 word = addWord(word);
                 freqs.put(word, freq);
             }
-            // normalize
+            // 标准化
             for (Entry<String, Double> entry : freqs.entrySet()) {
                 entry.setValue((Math.log(entry.getValue() / total)));
                 minFreq = Math.min(entry.getValue(), minFreq);
@@ -144,7 +144,7 @@ public class WordDictionary {
     }
 
 
-    public void loadUserDict(Path userDict, Charset charset) {                
+    public void loadUserDict(Path userDict, Charset charset) {
         try {
             BufferedReader br = Files.newBufferedReader(userDict, charset);
             long s = System.currentTimeMillis();
@@ -187,8 +187,9 @@ public class WordDictionary {
 
 
     public Double getFreq(String key) {
-        if (containsWord(key))
+        if (containsWord(key)) {
             return freqs.get(key);
+        }
         else
             return minFreq;
     }

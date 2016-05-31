@@ -38,12 +38,16 @@ public class CharacterUtil {
 
 
     public static boolean ccFind(char ch) {
+        //是中文字符
         if (isChineseLetter(ch))
             return true;
+        //是英文字符
         if (isEnglishLetter(ch))
             return true;
+        //是数字
         if (isDigit(ch))
             return true;
+        //是标点符号
         if (isConnector(ch))
             return true;
         return false;

@@ -11,7 +11,7 @@ import java.util.Map;
 class DictSegment implements Comparable<DictSegment> {
 
     // 公用字典表，存储汉字
-    private static final Map<Character, Character> charMap = new HashMap<Character, Character>(16, 0.95f);
+    private static final Map<Character, Character> charMap = new HashMap<>(16, 0.95f);
     // 数组大小上限
     private static final int ARRAY_LENGTH_LIMIT = 3;
 
@@ -99,7 +99,7 @@ class DictSegment implements Comparable<DictSegment> {
         // 设置hit的当前处理位置
         searchHit.setEnd(begin);
 
-        Character keyChar = new Character(charArray[begin]);
+        char keyChar = charArray[begin];
         DictSegment ds = null;
 
         // 引用实例变量为本地变量，避免查询时遇到更新的同步问题
@@ -196,7 +196,7 @@ class DictSegment implements Comparable<DictSegment> {
                 ds.fillSegment(charArray, begin + 1, length - 1, enabled);
             }
             else if (length == 1) {
-                // 已经是词元的最后一个char,设置当前节点状态为enabled，
+                // 已经是词元的最后一个char,设置当前节点    状态为enabled，
                 // enabled=1表明一个完整的词，enabled=0表示从词典中屏蔽当前词
                 ds.nodeState = enabled;
             }
@@ -236,7 +236,6 @@ class DictSegment implements Comparable<DictSegment> {
                     // segment数目+1
                     this.storeSize++;
                     Arrays.sort(segmentArray, 0, this.storeSize);
-
                 }
                 else {
                     // 数组容量已满，切换Map存储
