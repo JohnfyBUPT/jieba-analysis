@@ -57,7 +57,6 @@ public class JiebaSegmenter {
                 dag.put(i, value);
             }
         }
-        System.out.println(dag);
         return dag;
     }
 
@@ -73,7 +72,6 @@ public class JiebaSegmenter {
                 double freq = wordDict.getFreq(sentence.substring(i, x + 1)) + route.get(x + 1).freq;
                 if (candidate == null) {
                     candidate = new Pair<>(x, freq);
-                    System.out.println(candidate);
                 }
                 else if (candidate.freq < freq) {
                     candidate.freq = freq;
@@ -82,7 +80,6 @@ public class JiebaSegmenter {
             }
             route.put(i, candidate);
         }
-        System.out.println(route);
         return route;
     }
 
@@ -163,16 +160,19 @@ public class JiebaSegmenter {
             y = route.get(x).key + 1;
             String lWord = sentence.substring(x, y);
             //单个字组成词的情况，先存入buffer
-            if (y - x == 1)
+            if (y - x == 1) {
                 sb.append(lWord);
-            //多个字组成词的情况，把该词加入tokens，并处理一下buffer
+            }
+            //多个字组成词的情况，把该词加入tokens，并处理一下buffer,同时buffer清空
             else {
                 if (sb.length() > 0) {
                     buf = sb.toString();
                     sb = new StringBuilder();
+                    //buffer里只有一个单字
                     if (buf.length() == 1) {
                         tokens.add(buf);
                     }
+                    //buffer里有多个连续单字
                     else {
                         if (wordDict.containsWord(buf)) {
                             tokens.add(buf);

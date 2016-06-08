@@ -178,7 +178,6 @@ class DictSegment implements Comparable<DictSegment> {
      * @param enabled
      */
     private synchronized void fillSegment(char[] charArray, int begin, int length, int enabled) {
-        // 获取字典表中的汉字对象
         Character beginChar = new Character(charArray[begin]);
         Character keyChar = charMap.get(beginChar);
         // 字典中没有该字，则将其添加入字典
@@ -187,7 +186,6 @@ class DictSegment implements Comparable<DictSegment> {
             keyChar = beginChar;
         }
 
-        // 搜索当前节点的存储，查询对应keyChar的keyChar，如果没有则创建
         DictSegment ds = lookforSegment(keyChar, enabled);
         if (ds != null) {
             // 处理keyChar对应的segment
@@ -196,7 +194,7 @@ class DictSegment implements Comparable<DictSegment> {
                 ds.fillSegment(charArray, begin + 1, length - 1, enabled);
             }
             else if (length == 1) {
-                // 已经是词元的最后一个char,设置当前节点    状态为enabled，
+                // 已经是词元的最后一个char,设置当前节点状态为enabled，
                 // enabled=1表明一个完整的词，enabled=0表示从词典中屏蔽当前词
                 ds.nodeState = enabled;
             }
@@ -211,17 +209,18 @@ class DictSegment implements Comparable<DictSegment> {
      * @param keyChar
      * @param create
      *            =1如果没有找到，则创建新的segment ; =0如果没有找到，不创建，返回null
-     * @return
+     *
      */
     private DictSegment lookforSegment(Character keyChar, int create) {
 
         DictSegment ds = null;
 
         if (this.storeSize <= ARRAY_LENGTH_LIMIT) {
-            // 获取数组容器，如果数组未创建则创建数组
+            // 获取当前节点的子节点数组
             DictSegment[] segmentArray = getChildrenArray();
-            // 搜寻数组
+
             DictSegment keySegment = new DictSegment(keyChar);
+            // 遍历子节点数组
             int position = Arrays.binarySearch(segmentArray, 0, this.storeSize, keySegment);
             if (position >= 0) {
                 ds = segmentArray[position];

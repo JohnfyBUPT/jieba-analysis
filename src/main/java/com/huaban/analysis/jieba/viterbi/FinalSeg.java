@@ -26,7 +26,7 @@ public class FinalSeg {
     private static Map<Character, Double> start;
     private static Map<Character, Map<Character, Double>> trans;
     private static Map<Character, char[]> prevStatus;
-    private static Double MIN_FLOAT = -3.14e100;;
+    private static Double MIN_FLOAT = -3.14e100;
 
 
     private FinalSeg() {
@@ -77,13 +77,13 @@ public class FinalSeg {
         InputStream is = this.getClass().getResourceAsStream(PROB_EMIT);
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            emit = new HashMap<Character, Map<Character, Double>>();
+            emit = new HashMap<>();
             Map<Character, Double> values = null;
             while (br.ready()) {
                 String line = br.readLine();
                 String[] tokens = line.split("\t");
                 if (tokens.length == 1) {
-                    values = new HashMap<Character, Double>();
+                    values = new HashMap<>();
                     emit.put(tokens[0].charAt(0), values);
                 }
                 else {
@@ -129,8 +129,9 @@ public class FinalSeg {
             }
 
         }
-        if (chinese.length() > 0)
+        if (chinese.length() > 0) {
             viterbi(chinese.toString(), tokens);
+        }
         else {
             processOtherUnknownWords(other.toString(), tokens);
         }
@@ -138,13 +139,15 @@ public class FinalSeg {
 
 
     public void viterbi(String sentence, List<String> tokens) {
-        Vector<Map<Character, Double>> v = new Vector<Map<Character, Double>>();
-        Map<Character, Node> path = new HashMap<Character, Node>();
-
-        v.add(new HashMap<Character, Double>());
+        //v中存储每个字在四种状态下的概率
+        Vector<Map<Character, Double>> v = new Vector<>();
+        Map<Character, Node> path = new HashMap<>();
+        //以四种状态分别为起点建立路径
+        v.add(new HashMap<>());
         for (char state : states) {
             Double emP = emit.get(state).get(sentence.charAt(0));
             if (null == emP)
+                //在emit中找不到字就赋double类型最小值
                 emP = MIN_FLOAT;
             v.get(0).put(state, start.get(state) + emP);
             path.put(state, new Node(state, null));
@@ -164,6 +167,7 @@ public class FinalSeg {
                     if (null == tranp)
                         tranp = MIN_FLOAT;
                     tranp += (emp + v.get(i - 1).get(y0));
+                    //在trans中找最可能的当前状态
                     if (null == candidate)
                         candidate = new Pair<Character>(y0, tranp);
                     else if (candidate.freq <= tranp) {
@@ -178,7 +182,8 @@ public class FinalSeg {
         }
         double probE = v.get(sentence.length() - 1).get('E');
         double probS = v.get(sentence.length() - 1).get('S');
-        Vector<Character> posList = new Vector<Character>(sentence.length());
+        //得到BEMS状态序列
+        Vector<Character> posList = new Vector<>(sentence.length());
         Node win;
         if (probE < probS)
             win = path.get('S');
@@ -190,7 +195,7 @@ public class FinalSeg {
             win = win.parent;
         }
         Collections.reverse(posList);
-
+        //根据BEMS状态序列得到正确的组词
         int begin = 0, next = 0;
         for (int i = 0; i < sentence.length(); ++i) {
             char pos = posList.get(i);
